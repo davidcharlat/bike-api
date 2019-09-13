@@ -1,0 +1,25 @@
+{
+  "name": "bike-api",
+  "version": "0.1.0",
+  "description": "",
+  "main": "server.js",
+  "afaireplustard": {"scripts": {
+    "test": "mocha ./__tests__/server.test.js ./__tests__/app.test.js",
+    "start": "node server.js",
+    "hello": "echo \"Hello World!\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidcharlat/server_ping_pong.git"
+  },
+  "author": "davidcharlat",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/davidcharlat/server_ping_pong/issues"
+  },
+  "homepage": "https://github.com/davidcharlat/server_ping_pong#readme",
+  "devDependencies": {
+    "mocha": "^6.2.0",
+    "supertest": "^4.0.2"
+  }}
+}
