@@ -13,10 +13,10 @@ var server = http.createServer(function (req, res) {
             //res.results là aussi changer
             res.end();
         }
-        else if (parsurl[0] === "bikes") {
-            if (store.bikes[parsurl[1]]) {
+        else if (parsurl[1] === "bikes") {
+            if (store.bikes[parsurl[2]]) {
                 res.writeHead(200, { "Accept": "application/json" });
-                res.write(readbike(parsurl[1]));
+                res.write(readbike(parsurl[2]));
                 res.end();
             }
             else {
@@ -37,15 +37,15 @@ var server = http.createServer(function (req, res) {
             req.on('data', function (data) {
                 body += data;
             });
-
             req.on('end', function () {
+                if (testbike(body)) {//
+                    var bike = JSON.parse (body)
+                    res.writeHead(200, { "Accept": "application/json" });
+                    res.write(addbike(bike));
+                    res.end();
+                    }
                 console.log(body);
-            });
-
-            if (testbike(body))//
-            res.writeHead(200, { "Accept": "application/json" });
-            res.write(addbike(body));
-            res.end();
+            });   
         }
         else {}
     }
