@@ -7,20 +7,14 @@
     "mocha": "^6.2.0",
     "supertest": "^4.0.2"
   },
-  "start": "node server.js",
-  "afaireplustard": {"scripts": {
-    "test": "mocha ./__tests__/server.test.js ./__tests__/app.test.js",
-    "hello": "echo \"Hello World!\""
+  "scripts": {
+    "start": "node server.js",
+    "test": "mocha ./__tests__/api.test.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/davidcharlat/server_ping_pong.git"
+    "url": "git+https://github.com/davidcharlat/bike-api.git"
   },
   "author": "davidcharlat",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/davidcharlat/server_ping_pong/issues"
-  },
-  "homepage": "https://github.com/davidcharlat/server_ping_pong#readme"
- }
+  "license": "ISC"
 }

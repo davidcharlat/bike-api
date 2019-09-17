@@ -44,7 +44,7 @@ describe("GET /bikes", function () {
         supertest(api)
             .get("/bikes")
             .set('Accept', 'application/json')
-            .expect(200);
+            .expect(200)
             .end(function (err, res) {
                 if (err) done(err);
                 //   if (!res.result) done("no result")
