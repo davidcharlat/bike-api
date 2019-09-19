@@ -1,5 +1,5 @@
-const api = require('../server');
-const supertest = require('supertest');
+var api = require('../server');
+var supertest = require('supertest');
 
 describe("Accept: application/json", function () {
     it('should respond error 415 if not "Accept: application/json" as GET method is used', function (done) {
@@ -8,7 +8,7 @@ describe("Accept: application/json", function () {
             .expect(415)
             .end(function (err, res) {
                 if (err) done(err);
-                done();
+                else done();
             });
     });
     it('should respond error 415 if not "Accept: application/json" as POST method is used', function (done) {
@@ -25,7 +25,7 @@ describe("Accept: application/json", function () {
             .expect(415)
             .end(function (err, res) {
                 if (err) done(err);
-                done();
+                else done();
             });
     });
     /*it('should respond error 415 if not "Accept: application/json" as PUT method is used', function (done) {
@@ -34,7 +34,7 @@ describe("Accept: application/json", function () {
             .expect(415)
             .end(function (err, res) {
                 if (err) done(err);
-                done();
+                else done();
             });
     });*/
 });
@@ -47,8 +47,8 @@ describe("GET /bikes", function () {
             .expect(200)
             .end(function (err, res) {
                 if (err) done(err);
-                //   if (!res.result) done("no result")
-                done();
+                //   else if (!res.result) done("no result")
+                else done();
             });
     });
 });
@@ -58,7 +58,11 @@ describe('GET /bikes/<$id>', function () {
         supertest(api)
             .get('/bikes/kjehfbkezuzykjncije2344534RVCVReurhy')
             .set('Accept', 'application/json')
-            .expect(404, done);
+            .expect(404)
+            .end(function (err, res) {
+                if (err) done(err);
+                else done();
+            });
     });
     it("should respond 200 if <$id> match", function (done) {
         supertest(api)
@@ -91,7 +95,7 @@ describe('GET /bikes/<$id>', function () {
             })
             .end(function (err, res) {
                 if (err) done(err);
-                done();
+                else done();
             });
     });
 });
