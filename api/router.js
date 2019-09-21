@@ -4,7 +4,7 @@ var url = require('url');
 var store = require('./store');
 var { addbike, readbike, readbikes, removebike, testbike } = require("./controller")
 var server = http.createServer(function (req, res) {
-    console.log ("server");
+    //console.log ("server");
     var page = url.parse(req.url).pathname;
     let parsurl = page.split('/');
     if (req.method === 'GET') {
@@ -45,7 +45,7 @@ var server = http.createServer(function (req, res) {
                     res.write(addbike(bike));
                     res.end();
                     }
-                console.log(body);
+                //console.log(body);
             });   
         }
         else {res.end()}

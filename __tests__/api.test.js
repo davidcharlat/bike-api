@@ -28,7 +28,7 @@ describe("Accept: application/json", function () {
                 else done();
             });
     });
-    /*it('should respond error 415 if not "Accept: application/json" as PUT method is used', function (done) {
+    it('should respond error 415 if not "Accept: application/json" as PUT method is used', function (done) {
         supertest(api)
             .put("/bikes")
             .expect(415)
@@ -36,7 +36,16 @@ describe("Accept: application/json", function () {
                 if (err) done(err);
                 else done();
             });
-    });*/
+    });
+    it('should respond error 415 if not "Accept: application/json" as DELETE method is used', function (done) {
+        supertest(api)
+            .delete("/bikes")
+            .expect(415)
+            .end(function (err, res) {
+                if (err) done(err);
+                else done();
+            });
+    });
 });
 
 describe("GET /bikes", function () {
@@ -47,7 +56,7 @@ describe("GET /bikes", function () {
             .expect(200)
             .end(function (err, res) {
                 if (err) done(err);
-                //   else if (!res.result) done("no result")
+                else if (!(JSON.parse(res)).result) done("no result"); //voir si ça fonctionne (s'il faut pas parser et si done ("error") donne une erreur)
                 else done();
             });
     });
@@ -95,6 +104,210 @@ describe('GET /bikes/<$id>', function () {
             })
             .end(function (err, res) {
                 if (err) done(err);
+                else done();
+            });
+    });
+});
+
+describe('POST /bikes', function () {
+    it("should respond 400 for an invalid request", function (done) {
+        supertest(api)
+            .post("/bikes")
+            .set('Accept', 'application/json')
+            .send({
+                "poids_kg": 4.1,
+                "mise_circulation": "2015-06-21",
+                "prix_EUR": 299.99,
+                "qualité": 3.2,
+                "avis_consommateurs": 4.1
+            })
+            .end(function (err, res) {
+                if (err) done(err);
+                else done();
+            });
+    });
+    it("should respond 201 and return the new bike ID in response._links.self for an valid request", function (done) {
+        supertest(api)
+            .post("/bikes/d510e5fb-032c-47ed-b1db-54242315e254") //a completer avec le bon id
+            .set('Accept', 'application/json')
+            .expect(200)
+            .end(function (err, res) {
+                if (err) done(err);
+                else if (!(JSON.parse(res))._links.self || (((JSON.parse(res))._links.self).split('/'))[1] != "bikes"
+                    || (((JSON.parse(res))._links.self).split('/'))[2] === "" || !(((JSON.parse(res))._links.self).split('/'))[2]) {
+                    done("incorrect object:  response._links.self");
+                }
+                else done();
+            });
+    });
+});
+
+describe('POST /bikes/<$id>', function () {
+    it("should respond 405 if the request is invalid", function (done) {
+        supertest(api)
+            .post("/bikes/toto")
+            .set('Accept', 'application/json')
+            .send({
+                "poids_kg": 4.1,
+                "mise_circulation": "2015-06-21",
+                "prix_EUR": 299.99,
+                "qualité": 3.2,
+                "avis_consommateurs": 4.1
+            })
+            .expect(405)
+            .end(function (err, res) {
+                if (err) done(err);
+                else done();
+            });
+    });
+});
+
+describe('DELETE /bikes', function () {
+    it("should respond 405 if not /<$id> in path", function (done) {
+        supertest(api)
+            .delete("/bikes")
+            .set('Accept', 'application/json')
+            .expect(405)
+            .end(function (err, res) {
+                if (err) done(err);
+                else done();
+            });
+    });
+});
+
+describe('DELETE /bikes/<$id>', function () {
+    it("should respond 404 if <$id> doesn't match", function (done) {
+        supertest(api)
+            .delete('/bikes/kjehfbkezuzykjncije2344534RVCVReurhy')
+            .set('Accept', 'application/json')
+            .expect(404)
+            .end(function (err, res) {
+                if (err) done(err);
+                else done();
+            });
+    });
+    it("should respond 204 if resource has been deleted", function (done) {
+        supertest(api)
+            .post("/bikes")
+            .set('Accept', 'application/json')
+            .send({
+                "poids_kg": 4.1,
+                "mise_circulation": "2015-06-21",
+                "prix_EUR": 299.99,
+                "qualité": 3.2,
+                "avis_consommateurs": 4.1,
+                "réference": "FR42R34DY"
+            })
+        supertest(api)
+            .delete("/bikes/d510e5fb-032c-47ed-b1db-54242315e254") //a completer avec le bon id
+            .set('Accept', 'application/json')
+            .expect(204)
+        supertest(api)
+            .get("/bikes/d510e5fb-032c-47ed-b1db-54242315e254") //a completer avec le bon id
+            .set('Accept', 'application/json')
+            .expect(404)
+            .end(function (err, res) {
+                if (err) done(err);
+                else done();
+            });
+    });
+});
+
+describe('PUT /bikes', function () {
+    it("should respond 405 if not /<$id> in path", function (done) {
+        supertest(api)
+            .put("/bikes")
+            .set('Accept', 'application/json')
+            .expect(405)
+            .end(function (err, res) {
+                if (err) done(err);
+                else done();
+            });
+    });
+});
+
+describe('PUT /bikes/<$id>', function () {
+    it("should respond 404 if <$id> doesn't match", function (done) {
+        supertest(api)
+            .put('/bikes/kjehfbkezuzykjncije2344534RVCVReurhy')
+            .set('Accept', 'application/json')
+            .send({
+                "poids_kg": 4.1,
+                "mise_circulation": "2015-06-21",
+                "prix_EUR": 299.99,
+                "qualité": 3.2,
+                "avis_consommateurs": 4.1,
+                "réference": "FR42R34DY"
+            })
+            .expect(404)
+            .end(function (err, res) {
+                if (err) done(err);
+                else done();
+            });
+    });
+    it("should respond 400 if the request is invalid", function (done) {
+        supertest(api)
+            .post("/bikes")
+            .set('Accept', 'application/json')
+            .send({
+                "poids_kg": 4.1,
+                "mise_circulation": "2015-06-21",
+                "prix_EUR": 299.99,
+                "qualité": 3.2,
+                "avis_consommateurs": 4.1,
+                "réference": "FR42R34DY"
+            })
+        supertest(api)
+            .put("/bikes/d510e5fb-032c-47ed-b1db-54242315e254") //a completer avec le bon id
+            .set('Accept', 'application/json')
+            .send({
+                "poids_kg": 4.1,
+                "mise_circulation": "2015-06-21",
+                "prix_EUR": 299.99,
+                "qualité": 3.2,
+                "avis_consommateurs": 4.1
+            })
+            .expect(400)
+            .end(function (err, res) {
+                if (err) done(err);
+                else done();
+            });
+    });
+    it("should respond 201 if resource has been replaced", function (done) {
+        supertest(api)
+            .post("/bikes")
+            .set('Accept', 'application/json')
+            .send({
+                "poids_kg": 4.1,
+                "mise_circulation": "2015-06-21",
+                "prix_EUR": 299.99,
+                "qualité": 3.2,
+                "avis_consommateurs": 4.1,
+                "réference": "FR42R34DY"
+            })
+        supertest(api)
+            .put("/bikes/d510e5fb-032c-47ed-b1db-54242315e254") //a completer avec le bon id
+            .set('Accept', 'application/json')
+            .send({
+                "poids_kg": 4.1,
+                "mise_circulation": "2015-06-21",
+                "prix_EUR": 299.99,
+                "qualité": 3.2,
+                "avis_consommateurs": 4.1,
+                "réference": "nouvelleref"
+            })
+            .expect(201)
+        supertest(api)
+            .get("/bikes/d510e5fb-032c-47ed-b1db-54242315e254") //a completer avec le bon id
+            .set('Accept', 'application/json')
+            .end(function (err, res) {
+                if (err) done(err);
+                else if ((JSON.parse(res)).data.référence === "FR42R34DY") {
+                    done("error: resource hasn't been replaced");
+                }
+                else if ((JSON.parse(res)).data.référence != "nouvelleref") {
+                    done("error: resource hasn't been correctly replaced");
+                }
                 else done();
             });
     });
