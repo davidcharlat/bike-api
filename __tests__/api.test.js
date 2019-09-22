@@ -55,8 +55,9 @@ describe("GET /bikes", function () {
             .set('Accept', 'application/json')
             .expect(200)
             .end(function (err, res) {
+                //console.log ("toto " + (JSON.parse (res.text)));
                 if (err) done(err);
-                else if (!(JSON.parse(res)).result) done("no result"); //voir si ça fonctionne (s'il faut pas parser et si done ("error") donne une erreur)
+                else if (!JSON.parse(res.text).results) done("no result"); //voir si ça fonctionne (s'il faut pas parser et si done ("error") donne une erreur)
                 else done();
             });
     });
@@ -85,29 +86,36 @@ describe('GET /bikes/<$id>', function () {
                 "avis_consommateurs": 4.1,
                 "réference": "FR42R34DY"
             })
-        supertest(api)
-            .get("/bikes/d510e5fb-032c-47ed-b1db-54242315e254") //a completer avec le bon id
-            .set('Accept', 'application/json')
-            .expect(200, {
-                "_links": {
-                    "self": "/bikes/d510e5fb-032c-47ed-b1db-54242315e254", //pareil
-                },
-                "id": "d510e5fb-032c-47ed-b1db-54242315e254", //idem
-                "data": {
-                    "poids_kg": 4.1,
-                    "mise_circulation": "2015-06-21",
-                    "prix_EUR": 299.99,
-                    "qualité": 3.2,
-                    "avis_consommateurs": 4.1,
-                    "réference": "FR42R34DY"  //voir les sauts s'il faut retransformer en objet
-                }
-            })
             .end(function (err, res) {
                 if (err) done(err);
-                else done();
+                else {
+                    let iden = JSON.parse(res.text)._links.self;
+                    supertest(api)
+                        .get(iden)
+                        .set('Accept', 'application/json')
+                        .expect(200, {
+                            "_links": {
+                                "self": iden, //pareil
+                            },
+                            "id": (iden.split('/'))[2], //idem
+                            "data": {
+                                "poids_kg": 4.1,
+                                "mise_circulation": "2015-06-21",
+                                "prix_EUR": 299.99,
+                                "qualité": 3.2,
+                                "avis_consommateurs": 4.1,
+                                "réference": "FR42R34DY"  //voir les sauts s'il faut retransformer en objet
+                            }
+                        })
+                        .end(function (err, res) {
+                            if (err) done(err);
+                            else done();
+                        });
+                }
             });
     });
 });
+
 
 describe('POST /bikes', function () {
     it("should respond 400 for an invalid request", function (done) {
@@ -128,22 +136,56 @@ describe('POST /bikes', function () {
     });
     it("should respond 201 and return the new bike ID in response._links.self for an valid request", function (done) {
         supertest(api)
-            .post("/bikes/d510e5fb-032c-47ed-b1db-54242315e254") //a completer avec le bon id
+            .post("/bikes")
             .set('Accept', 'application/json')
-            .expect(200)
+            .send({
+                "poids_kg": 4.1,
+                "mise_circulation": "2015-06-21",
+                "prix_EUR": 299.99,
+                "qualité": 3.2,
+                "avis_consommateurs": 4.1,
+                "réference": "FR42R34DY"
+            })
+            .expect(201)
             .end(function (err, res) {
                 if (err) done(err);
-                else if (!(JSON.parse(res))._links.self || (((JSON.parse(res))._links.self).split('/'))[1] != "bikes"
-                    || (((JSON.parse(res))._links.self).split('/'))[2] === "" || !(((JSON.parse(res))._links.self).split('/'))[2]) {
-                    done("incorrect object:  response._links.self");
+                else {
+                    let iden = JSON.parse(res.text)._links.self;
+                    if (!JSON.parse(res.text)._links.self) {
+                        done("(response.text)._links.self isn't defined")
+                    }
+                    else if (JSON.parse(res.text).id != (iden.split('/'))[2]) {
+                        done("(response.text).id doesn't match")
+                    }
+                    else
+                        supertest(api)
+                            .get(iden)
+                            .set('Accept', 'application/json')
+                            .expect(200, {
+                                "_links": {
+                                    "self": iden, //pareil
+                                },
+                                "id": (iden.split('/'))[2], //idem
+                                "data": {
+                                    "poids_kg": 4.1,
+                                    "mise_circulation": "2015-06-21",
+                                    "prix_EUR": 299.99,
+                                    "qualité": 3.2,
+                                    "avis_consommateurs": 4.1,
+                                    "réference": "FR42R34DY"  //voir les sauts s'il faut retransformer en objet
+                                }
+                            })
+                            .end(function (err, res) {
+                                if (err) done(err);
+                                else done();
+                            });
                 }
-                else done();
             });
     });
 });
 
 describe('POST /bikes/<$id>', function () {
-    it("should respond 405 if the request is invalid", function (done) {
+    it("should respond 405", function (done) {
         supertest(api)
             .post("/bikes/toto")
             .set('Accept', 'application/json')
@@ -302,10 +344,10 @@ describe('PUT /bikes/<$id>', function () {
             .set('Accept', 'application/json')
             .end(function (err, res) {
                 if (err) done(err);
-                else if ((JSON.parse(res)).data.référence === "FR42R34DY") {
+                else if (JSON.parse(res.text).data.référence === "FR42R34DY") {
                     done("error: resource hasn't been replaced");
                 }
-                else if ((JSON.parse(res)).data.référence != "nouvelleref") {
+                else if (JSON.parse(res.text).data.référence != "nouvelleref") {
                     done("error: resource hasn't been correctly replaced");
                 }
                 else done();

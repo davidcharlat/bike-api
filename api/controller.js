@@ -3,13 +3,13 @@ const store = require('./store');
 
 const addbike = function addbike(newbike) {  //newbike est pour l'instant un objet json {"taille": "tgdet", "prix":244, "qualite":3.2}
     let id = makeid(newbike)  //ne pas oublier de ecrire la fonction makeid
-    console.log (newbike);
+    //console.log (newbike);
     store.bikes[id] = {
         "_links": {
             "self": ("/bikes/" + id)
         },
         "id":id,
-        "data":newbike,
+        "data":newbike
     };
     return JSON.stringify(store.bikes[id]);
 };
@@ -20,16 +20,27 @@ const removebike = function (id) {
 
 const updatebike = function (id, newbike) {
     store.bikes[id].data = newbike;
-    return JSON.stringify(store[id]);
+    return JSON.stringify(store.bikes[id]);
 };
 
 const readbikes = function (){
-    let ret = ""; //pas tt a fait ça (voir consigne)
+    let ret =   {"_links": {
+        "self" : "/bikes"
+      },
+     "results": [
+      ]
+    }
+    let i = 0;
     for (const key in store.bikes) {
-          ret += JSON.stringify (store.bikes[key]);
+        ret.results[i] = {
+            "_links" : store.bikes[key]._links,
+            "id" : store.bikes[key].id
+        };
+        i++;
     };
+    ret = JSON.stringify (ret);
     console.log (ret);
-    return JSON.stringify (store.bikes);
+    return (ret);
 };
 
 const readbike = function (id){

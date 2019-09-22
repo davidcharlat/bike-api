@@ -40,15 +40,19 @@ var server = http.createServer(function (req, res) {
             });
             req.on('end', function () {
                 if (testbike(body)) {//
-                    var bike = JSON.parse (body)
-                    res.writeHead(200, { "Accept": "application/json" });
+                    var bike = JSON.parse(body)
+                    res.writeHead(201, { "content-type": "application/json" });
                     res.write(addbike(bike));
                     res.end();
-                    }
+                }
                 //console.log(body);
-            });   
+            });
         }
-        else {res.end()}
+        else {
+            res.writeHead(405, { "content-type": "text/plain" });
+            res.write("error, method not allowed");
+            res.end()
+        }
     }
 });
 module.exports = server;
