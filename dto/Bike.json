@@ -1,8 +1,44 @@
 {
-    "poids_kg": 4.1,
-    "mise_circulation": "2015-06-21",
-    "prix_EUR": 299.99,
-    "qualité": 3.2,
-    "avis_consommateurs": 4.1,
-    "réference": "FR42R34DY"
-  }
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "describes a valid bike for bike-api",
+  "type": "object",
+  "properties": {
+    "poids_kg": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "mise_circulation": {
+      "type": "string",
+      "format": "date"
+    },
+    "prix_EUR": {
+      "type": "number",
+      "minimum": 0,
+      "multipleOf": 0.01
+    },
+    "qualité": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 5
+    },
+    "avis_consommateur": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 5
+    },
+    "référence": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255,
+    }
+  },
+  "required": [
+    "prix_EUR",
+    "réference"
+  ],
+  "patternProperties": {
+    ".{1,64}": {}
+  },
+  "maxProperties": 9,
+  "additionalProperties": false
+}
