@@ -1,4 +1,4 @@
-var api = require('../server');
+var api = require('../api/router');
 var supertest = require('supertest');
 
 describe("Accept: application/json", function () {
