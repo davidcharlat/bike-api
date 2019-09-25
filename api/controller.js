@@ -16,6 +16,7 @@ const addbike = function addbike(newbike) {  //newbike est pour l'instant un obj
 
 const removebike = function (id) {
     delete store.bikes[id];
+    return (true);
 };
 
 const updatebike = function (id, newbike) {
@@ -44,8 +45,8 @@ const readbikes = function (){
 };
 
 const readbike = function (id){
-    console.log (id);
-    console.log (store.bikes[id]);
+//    console.log (id);
+//  console.log (store.bikes[id]);
     return JSON.stringify (store.bikes[id]);
 };
 
@@ -81,7 +82,7 @@ console.log (readbikes ());
   //console.log (store.bikes["identifiant_trucmuche2015-06-21"]);
 */
 
-module.exports = {addbike, readbike, readbikes, removebike, testbike}
+module.exports = {addbike, readbike, readbikes, removebike, testbike, updatebike}
 
 
 
