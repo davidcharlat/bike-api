@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "",
   "main": "server.js",
+  "dependencies": {
+    "uuid": "^3.3.2"
+  },
   "devDependencies": {
     "mocha": "^6.2.0",
     "supertest": "^4.0.2"

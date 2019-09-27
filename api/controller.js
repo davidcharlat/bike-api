@@ -1,4 +1,5 @@
 //logique de traitement
+const uuidv4 = require('uuid/v4');
 const store = require('./store');
 
 const addbike = function (newbike, store) {  //newbike est pour l'instant un objet json {"taille": "tgdet", "prix":244, "qualite":3.2}
@@ -52,7 +53,7 @@ const readbike = function (id, store) {
 };
 
 const makeid = function (bike) {
-    return ("identifiant_trucmuche" + bike.prix_EUR);
+    return (uuidv4());
 }
 
 const testbike = function (string) {
