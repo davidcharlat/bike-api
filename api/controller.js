@@ -1,6 +1,6 @@
-//logique de traitement
+const jsonschema = require('jsonschema')//logique de traitement
 const uuidv4 = require('uuid/v4');
-const store = require('./store');
+const bikeschema = require ("../dto/Bike")
 
 const addbike = function (newbike, store) {  //newbike est pour l'instant un objet json {"taille": "tgdet", "prix":244, "qualite":3.2}
     let id = makeid(newbike)  //ne pas oublier de ecrire la fonction makeid
@@ -58,7 +58,7 @@ const makeid = function (bike) {
 
 const testbike = function (string) {
     let bike = JSON.parse(string)
-    if (bike.réference) {
+    if (jsonschema.validate(bike, bikeschema).errors.length == 0) {
         return true;
     }
     else { 
