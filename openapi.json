@@ -1,0 +1,243 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Bike-api",
+        "description": "as an exercice, show and store bikes ",
+        "version": "0.1.0"
+    },
+    "path": {
+        "/pets": {
+            "get": {
+                "description": "Returns an array of all bikes",
+                "produces": "application/json",
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "links": {
+                                    "type": "object",
+                                    "properties": {
+                                        "_self": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "results": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/bike_in_response"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "add a bike to the store",
+                "produces": [
+                    "application/json",
+                    "text/plain"
+                ],
+                "parameters": {
+                    "name": "bike",
+                    "in": "body",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/bike"
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Bike uploaded",
+                        "schema": {
+                            "$ref": "#/definitions/bike_in_response"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            },
+            "put": {
+                "description": "send an error message",
+                "produces": "text/plain",
+                "responses": {
+                    "405": {
+                        "description": "Method not allowed"
+                    }
+                }
+            },
+            "delete": {
+                "description": "send an error message",
+                "produces": "text/plain",
+                "responses": {
+                    "405": {
+                        "description": "Method not allowed"
+                    }
+                }
+            }
+        },
+        "/pets/{id}": {
+            "get": {
+                "description": "Returns the bike identified by id",
+                "produces": [
+                    "application/json",
+                    "text/plain"
+                ],
+                "parameters": {
+                    "in": "path",
+                    "name": "id",
+                    "type": "string"
+                },
+                "responses": {
+                    "200": {
+                        "description": "a bike that is returned",
+                        "schema": {
+                            "$ref": "#/definitions/bike_in_response"
+                        }
+                    },
+                    "404": {
+                        "description": "incorrect ID"
+                    }
+                }
+            },
+            "post": {
+                "description": "send an error message",
+                "produces": "text/plain",
+                "responses": {
+                    "405": {
+                        "description": "Method not allowed"
+                    }
+                }
+            },
+            "put": {
+                "description": "Update the bike identified by id",
+                "produces": [
+                    "application/json",
+                    "text/plain"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "type": "string"
+                    },
+                    {
+                        "name": "bike",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bike"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "the updated bike",
+                        "schema": {
+                            "$ref": "#/definitions/bike_in_response"
+                        }
+                    },
+                    "404": {
+                        "description": "incorrect ID"
+                    },
+                    "400" : {
+                        "description":"Invalid input"
+                    }
+                }
+            },
+            "delete": {
+                "description": "remove the bike identified by id",
+                "produces": [
+                    "application/json",
+                    "text/plain"
+                ],
+                "parameters": 
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "type": "string"
+                    },
+                "responses": {
+                    "204": {
+                        "description": "the bike has been delated",
+                    },
+                    "404": {
+                        "description": "incorrect ID"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "bike": {
+            "description": "describes a valid bike for bike-api",
+            "type": "object",
+            "properties": {
+                "poids_kg": {
+                    "type": "number",
+                    "exclusiveMinimum": true,
+                    "minimum": 0
+                },
+                "mise_circulation": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "prix_EUR": {
+                    "type": "number",
+                    "minimum": 0,
+                    "multipleOf": 0.01
+                },
+                "qualité": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 5
+                },
+                "avis_consommateur": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 5
+                },
+                "référence": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                }
+            },
+            "required": [
+                "prix_EUR",
+                "réference"
+            ],
+            "maxProperties": 9,
+            "additionalProperties": false,
+            "x-patternProperties": {
+                ".{1,64}": {}
+            }
+        },
+        "bike_in_response": {
+            "type": "object",
+            "properties": {
+                "links": {
+                    "type": "object",
+                    "properties": {
+                        "_self": {
+                            "type": "string"
+                        },
+                        "id": {
+                            "type": "string"
+                        },
+                        "data": {
+                            "$ref": "#/definitions/bike"
+                        }
+                    },
+                    "required": [
+                        "_self",
+                        "id"
+                    ]
+                }
+            }
+        }
+    }
+}
