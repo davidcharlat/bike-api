@@ -5,8 +5,8 @@
         "description": "as an exercice, show and store bikes ",
         "version": "0.1.0"
     },
-    "path": {
-        "/pets": {
+    "paths": {
+        "/bikes": {
             "get": {
                 "description": "Returns an array of all bikes",
                 "produces": "application/json",
@@ -40,14 +40,16 @@
                     "application/json",
                     "text/plain"
                 ],
-                "parameters": {
-                    "name": "bike",
-                    "in": "body",
-                    "required": true,
-                    "schema": {
-                        "$ref": "#/definitions/bike"
+                "parameters": [
+                    {
+                        "name": "bike",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bike"
+                        }
                     }
-                },
+                ],
                 "responses": {
                     "201": {
                         "description": "Bike uploaded",
@@ -79,7 +81,7 @@
                 }
             }
         },
-        "/pets/{id}": {
+        "/bikes/{id}": {
             "get": {
                 "description": "Returns the bike identified by id",
                 "produces": [
@@ -143,8 +145,8 @@
                     "404": {
                         "description": "incorrect ID"
                     },
-                    "400" : {
-                        "description":"Invalid input"
+                    "400": {
+                        "description": "Invalid input"
                     }
                 }
             },
@@ -154,15 +156,14 @@
                     "application/json",
                     "text/plain"
                 ],
-                "parameters": 
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "type": "string"
-                    },
+                "parameters": [{
+                    "in": "path",
+                    "name": "id",
+                    "type": "string"
+                }],
                 "responses": {
                     "204": {
-                        "description": "the bike has been delated",
+                        "description": "the bike has been delated"
                     },
                     "404": {
                         "description": "incorrect ID"
