@@ -8,25 +8,28 @@
     "paths": {
         "/bikes": {
             "get": {
-                "description": "Returns an array of all bikes",
-                "produces": "application/json",
                 "responses": {
                     "200": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "links": {
+                        "description": "Returns an array of all bikes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "_self": {
-                                            "type": "string"
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "_self": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        },
+                                        "results": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/bike_in_response"
+                                            }
                                         }
-                                    }
-                                },
-                                "results": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/definitions/bike_in_response"
                                     }
                                 }
                             }
@@ -36,26 +39,25 @@
             },
             "post": {
                 "description": "add a bike to the store",
-                "produces": [
-                    "application/json",
-                    "text/plain"
-                ],
-                "parameters": [
-                    {
-                        "name": "bike",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/bike"
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/bike"
+                            }
                         }
                     }
-                ],
+                },
                 "responses": {
                     "201": {
-                        "description": "Bike uploaded",
-                        "schema": {
-                            "$ref": "#/definitions/bike_in_response"
-                        }
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/bike_in_response"
+                                }
+                            }
+                        },
+                        "description": "Bike uploaded"
                     },
                     "400": {
                         "description": "Invalid input"
@@ -64,7 +66,6 @@
             },
             "put": {
                 "description": "send an error message",
-                "produces": "text/plain",
                 "responses": {
                     "405": {
                         "description": "Method not allowed"
@@ -73,7 +74,6 @@
             },
             "delete": {
                 "description": "send an error message",
-                "produces": "text/plain",
                 "responses": {
                     "405": {
                         "description": "Method not allowed"
@@ -82,22 +82,23 @@
             }
         },
         "/bikes/{id}": {
+            "parameters": [
+                {
+                    "in": "path",
+                    "name": "id"
+                }
+            ],
             "get": {
                 "description": "Returns the bike identified by id",
-                "produces": [
-                    "application/json",
-                    "text/plain"
-                ],
-                "parameters": {
-                    "in": "path",
-                    "name": "id",
-                    "type": "string"
-                },
                 "responses": {
                     "200": {
                         "description": "a bike that is returned",
-                        "schema": {
-                            "$ref": "#/definitions/bike_in_response"
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/bike_in_response"
+                                }
+                            }
                         }
                     },
                     "404": {
@@ -107,7 +108,6 @@
             },
             "post": {
                 "description": "send an error message",
-                "produces": "text/plain",
                 "responses": {
                     "405": {
                         "description": "Method not allowed"
@@ -116,31 +116,25 @@
             },
             "put": {
                 "description": "Update the bike identified by id",
-                "produces": [
-                    "application/json",
-                    "text/plain"
-                ],
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "type": "string"
-                    },
-                    {
-                        "name": "bike",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/bike"
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/bike"
+                            }
                         }
                     }
-                ],
+                },
                 "responses": {
                     "201": {
-                        "description": "the updated bike",
-                        "schema": {
-                            "$ref": "#/definitions/bike_in_response"
-                        }
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/bike_in_response"
+                                }
+                            }
+                        },
+                        "description": "the updated bike"
                     },
                     "404": {
                         "description": "incorrect ID"
@@ -152,15 +146,6 @@
             },
             "delete": {
                 "description": "remove the bike identified by id",
-                "produces": [
-                    "application/json",
-                    "text/plain"
-                ],
-                "parameters": [{
-                    "in": "path",
-                    "name": "id",
-                    "type": "string"
-                }],
                 "responses": {
                     "204": {
                         "description": "the bike has been delated"
@@ -172,71 +157,73 @@
             }
         }
     },
-    "definitions": {
-        "bike": {
-            "description": "describes a valid bike for bike-api",
-            "type": "object",
-            "properties": {
-                "poids_kg": {
-                    "type": "number",
-                    "exclusiveMinimum": true,
-                    "minimum": 0
+    "components": {
+        "schemas": {
+            "bike": {
+                "description": "describes a valid bike for bike-api",
+                "type": "object",
+                "properties": {
+                    "poids_kg": {
+                        "type": "number",
+                        "exclusiveMinimum": true,
+                        "minimum": 0
+                    },
+                    "mise_circulation": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "prix_EUR": {
+                        "type": "number",
+                        "minimum": 0,
+                        "multipleOf": 0.01
+                    },
+                    "qualité": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 5
+                    },
+                    "avis_consommateur": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 5
+                    },
+                    "référence": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 255
+                    }
                 },
-                "mise_circulation": {
-                    "type": "string",
-                    "format": "date"
-                },
-                "prix_EUR": {
-                    "type": "number",
-                    "minimum": 0,
-                    "multipleOf": 0.01
-                },
-                "qualité": {
-                    "type": "number",
-                    "minimum": 0,
-                    "maximum": 5
-                },
-                "avis_consommateur": {
-                    "type": "number",
-                    "minimum": 0,
-                    "maximum": 5
-                },
-                "référence": {
-                    "type": "string",
-                    "minLength": 1,
-                    "maxLength": 255
+                "required": [
+                    "prix_EUR",
+                    "réference"
+                ],
+                "maxProperties": 9,
+                "additionalProperties": false,
+                "x-patternProperties": {
+                    ".{1,64}": {}
                 }
             },
-            "required": [
-                "prix_EUR",
-                "réference"
-            ],
-            "maxProperties": 9,
-            "additionalProperties": false,
-            "x-patternProperties": {
-                ".{1,64}": {}
-            }
-        },
-        "bike_in_response": {
-            "type": "object",
-            "properties": {
-                "links": {
-                    "type": "object",
-                    "properties": {
-                        "_self": {
-                            "type": "string"
+            "bike_in_response": {
+                "type": "object",
+                "properties": {
+                    "links": {
+                        "type": "object",
+                        "properties": {
+                            "_self": {
+                                "type": "string"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "data": {
+                                "$ref": "#/components/schema/bike"
+                            }
                         },
-                        "id": {
-                            "type": "string"
-                        },
-                        "data": {
-                            "$ref": "#/definitions/bike"
-                        }
-                    },
-                    "required": [
-                        "_self",
-                        "id"
-                    ]
+                        "required": [
+                            "_self",
+                            "id"
+                        ]
+                    }
                 }
             }
         }
